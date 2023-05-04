@@ -16,7 +16,7 @@ const index = ({deputados}) => {
            <Col key={item.id}>
             <Card className='mb-5'>
             <Link href={'/deputados/' + item.id}>
-             <Card.Img key={item.id} src={item.urlFoto} title={item.nome} width="100px" variant="top"/> 
+             <Card.Img key={item.id} src={item.urlFoto} title={item.nome + ' - '  + item.siglaPartido} width="100px" variant="top"/> 
             </Link> 
             </Card> 
            </Col>
