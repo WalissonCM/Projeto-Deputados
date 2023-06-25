@@ -1,31 +1,70 @@
 import Pagina from '@/components/Pagina'
 import apiDeputados from '@/services/apiDeputados'
 import React from 'react'
-import { Col, Row, Card, Button, Table } from 'react-bootstrap'
+import { Col, Row, Card, Table } from 'react-bootstrap'
+import {Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip,Legend} from 'chart.js'
+import { Bar } from 'react-chartjs-2'
 
-const Detalhes = ({ deputados, despesas, profissoes }) => {
+
+const Detalhes = ({ deputados, despesas }) => {
+  
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+  )
+  
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top'
+        
+      },
+    },
+  };
+  
+const labels =  ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho','Agosto','Setembro', 'Outubro', 'Novembro', 'Dezembro']
+ 
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: 'Valor',
+        data: despesas.map(item => item.valorDocumento),
+        backgroundColor: 'rgb(53, 162, 235)',
+      },
+    ],
+  }
+  
+
   return (
+
+
     <Pagina titulo="Deputados">
 
       <Row>
-        <Col md={3}>
+        <Col md={3} className='mx-5 py-5'>
           <Card style={{ width: '18rem' }}>
             <Card.Img src={deputados.ultimoStatus.urlFoto} width="100px" variant="top" />
             <Card.Body>
               <Card.Title>{deputados.nomeCivil}</Card.Title>
               <Card.Text>
-                <p>Partido: {deputados.ultimoStatus.siglaPartido}</p>
-                <p>UF: {deputados.ultimoStatus.siglaUf}</p>
+                <div>Partido: {deputados.ultimoStatus.siglaPartido}</div>
+                <div className='mt-2'>UF: {deputados.ultimoStatus.siglaUf}</div>
               </Card.Text>
             </Card.Body>
           </Card>
-          <br />
-          <Button href="/deputados" variant="dark">voltar</Button>
         </Col>
 
         <Col md={6}>
-          <h2>Despesas</h2>
-
+          <h2 className='text-center mt-5'>Despesas</h2>
+          
+          <Bar data={data} options={options} />
+          
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -38,23 +77,15 @@ const Detalhes = ({ deputados, despesas, profissoes }) => {
               {despesas.map(item => (
                 <tr>
                   <td>{item.dataDocumento}</td>
-                  <td>{item.tipoDespesa}</td>
+                  <td>{item.ano}</td>
                   <td>{item.valorDocumento}</td>
                 </tr>
                   ))}
             </tbody>
           </Table>
-        </Col>
+           
 
-        <Col md={3}>
-          <h2>Profissões</h2>
-          <ul>
-            {profissoes.map(item => (
-              <li>{item.titulo}</li>
-            ))}
-          </ul>
         </Col>
-
       </Row>
 
     </Pagina>
@@ -73,10 +104,7 @@ export async function getServerSideProps(context) {
   const resDespesas = await apiDeputados.get('/deputados/' + id + '/despesas')
   const despesas = resDespesas.data.dados
 
-  const resProfissoes = await apiDeputados.get('/deputados/' + id + '/profissoes')
-  const profissoes = resProfissoes.data.dados
-
   return {
-    props: { deputados, despesas, profissoes }
+    props: { deputados, despesas }
   }
 }    

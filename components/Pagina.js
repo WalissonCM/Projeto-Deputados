@@ -7,17 +7,12 @@ const Pagina = (props) => {
   return (
     <>
     <Cabecalho />
-      <div className="bg-secondary py-5 text-white text-center mb-3">
+      <div className="bg-success bg-opacity-75 py-2 text-white text-center ">
         <Container>
            <h1>{props.titulo}</h1>
         </Container >
       </div>
-      <Container className='pb-5 mb-5'>
       {props.children}
-      </Container>
-      <div style={{width: '100%'}} className=' bg-secondary bottom-0 position-fixed py-3 text-white text-center'>
-        <p>Todos os direitos reservados</p>
-      </div>
     </>
   )
 }
