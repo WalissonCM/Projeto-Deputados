@@ -27,15 +27,31 @@ const Detalhes = ({ deputados, despesas }) => {
     },
   };
   
-const labels =  ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho','Agosto','Setembro', 'Outubro', 'Novembro', 'Dezembro']
- 
-  const data = {
+let labels =  ['','Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho','Agosto','Setembro', 'Outubro', 'Novembro', 'Dezembro']
+
+const grup = despesas.reduce((acc,item) => {
+  if (acc[item.mes]) {
+    acc[item.mes] += item.valorDocumento
+  } else {
+    acc[item.mes] = item.valorDocumento
+  }
+  return acc
+}, {});
+
+const dadosChar = [
+  ['mes', 'valor'], 
+  ...Object.entries(grup)
+] 
+
+  
+let data = {
     labels,
     datasets: [
       {
         label: 'Valor',
-        data: despesas.map(item => item.valorDocumento),
+        data: dadosChar,
         backgroundColor: 'rgb(53, 162, 235)',
+        labels
       },
     ],
   }
@@ -53,8 +69,8 @@ const labels =  ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Ju
             <Card.Body>
               <Card.Title>{deputados.nomeCivil}</Card.Title>
               <Card.Text>
-                <div>Partido: {deputados.ultimoStatus.siglaPartido}</div>
-                <div className='mt-2'>UF: {deputados.ultimoStatus.siglaUf}</div>
+                <span>Partido: {deputados.ultimoStatus.siglaPartido}</span>
+                <span className='mt-2'>UF: {deputados.ultimoStatus.siglaUf}</span>
               </Card.Text>
             </Card.Body>
           </Card>
@@ -68,6 +84,7 @@ const labels =  ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Ju
           <Table striped bordered hover>
             <thead>
               <tr>
+                <th>Mes</th>
                 <th>Data</th>
                 <th>Descrição</th>
                 <th>Valor</th>
@@ -76,6 +93,7 @@ const labels =  ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Ju
             <tbody>
               {despesas.map(item => (
                 <tr>
+                  <td>{item.mes}</td>
                   <td>{item.dataDocumento}</td>
                   <td>{item.ano}</td>
                   <td>{item.valorDocumento}</td>
@@ -101,7 +119,7 @@ export async function getServerSideProps(context) {
   const resultado = await apiDeputados.get('/deputados/' + id)
   const deputados = resultado.data.dados
 
-  const resDespesas = await apiDeputados.get('/deputados/' + id + '/despesas')
+  const resDespesas = await apiDeputados.get('/deputados/' + id + '/despesas?ano=2023&ano=2022&itens=1000&ordem=ASC')
   const despesas = resDespesas.data.dados
 
   return {
