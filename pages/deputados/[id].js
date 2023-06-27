@@ -48,7 +48,7 @@ let data = {
     labels,
     datasets: [
       {
-        label: 'Valor',
+        label: 'Valor de 2022',
         data: dadosChar,
         backgroundColor: 'rgb(53, 162, 235)',
         labels
@@ -119,7 +119,7 @@ export async function getServerSideProps(context) {
   const resultado = await apiDeputados.get('/deputados/' + id)
   const deputados = resultado.data.dados
 
-  const resDespesas = await apiDeputados.get('/deputados/' + id + '/despesas?ano=2023&ano=2022&itens=1000&ordem=ASC')
+  const resDespesas = await apiDeputados.get('/deputados/' + id + '/despesas?ano=2022&itens=100&ordem=ASC')
   const despesas = resDespesas.data.dados
 
   return {
